@@ -15,6 +15,13 @@ import {
 import { appConfig } from '../../config';
 import { environment } from '../../environments/environment';
 import { REDUCER_TOKEN, getReducers, metaReducers } from './reducers';
+import * as localForage from 'localforage';
+import { StorageService, SessionStorageService,LocalStorageService, 
+    AsyncStorageService,
+    LocalForageService,
+    LOCAL_FORAGE_SERVICE_CONFIG_TOKEN,
+    
+} from '@eui/core';
 
 @NgModule({
     imports: [
@@ -40,7 +47,13 @@ import { REDUCER_TOKEN, getReducers, metaReducers } from './reducers';
         },
         {
             provide: APP_BASE_HREF, useValue: '/'
-        }
+        },
+        SessionStorageService,
+        LocalStorageService,
+        { provide: StorageService, useExisting: LocalStorageService },
+         LocalForageService,
+        { provide: AsyncStorageService, useExisting: LocalForageService },
+
     ]
 })
 export class CoreModule {

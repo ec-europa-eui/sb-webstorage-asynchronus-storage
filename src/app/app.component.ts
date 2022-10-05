@@ -1,8 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, Inject} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { getUserState, UserState } from '@eui/core';
 import { Observable, Subscription } from 'rxjs';
 import { I18nService } from '@eui/core';
+import { StorageService,LocalForageService } from '@eui/core';
 
 @Component({
     selector: 'app-root',
@@ -25,13 +26,25 @@ export class AppComponent implements OnDestroy {
         { label: 'Title label 4', subLabel: 'Subtitle label' },
     ];
 
-    constructor(private store: Store<any>,protected i18nService: I18nService,) {
+    constructor(private store: Store<any>,protected i18nService: I18nService, private localForage : LocalForageService,
+        private sessionStorageService: StorageService,
+        @Inject('LocalStorageService') private localStorageService: StorageService,
+      
+    ) {
         this.userState = <any>this.store.select(getUserState);
         this.subs.push(this.userState.subscribe((user: UserState) => {
             this.userInfos = { ...user };
         }));
         this.i18nService.init();
+
     }
+
+    ngOnInit() {
+        this.sessionStorageService.set('SESSION\_STORAGE', "testSession");
+        this.localStorageService.set('STORAGE', "local");
+        this.localForage.set('name', 'uma');
+    }
+
 
     ngOnDestroy() {
         this.subs.forEach((s: Subscription) => s.unsubscribe());
